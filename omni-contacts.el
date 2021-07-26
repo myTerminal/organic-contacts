@@ -141,20 +141,23 @@
 
 (defun omni-contacts--present-choice-of-contacts (collection)
   "Presents a choice of contacts using either ivy or ido"
-  (if (featurep 'ivy)
-      (let* ((ivy-wrap t))
-        (cl-flet* ((pick-matching-contact (contacts selection)
-                                          (car (cl-remove-if-not (lambda (contact)
-                                                                   (equal (omni-contacts--get-contact-visual-name contact)
-                                                                          selection))
-                                                                 contacts)))
-                   (show-contact (selection)
-                                 (omni-contacts--contact-card-show (pick-matching-contact collection
-                                                                                          selection))))
-          (ivy-read "Select a Contact to view: "
-                    (mapcar #'omni-contacts--get-contact-visual-name
-                            collection)
-                    :action #'show-contact)))))
+  (cl-flet* ((pick-matching-contact (contacts selection)
+                                    (car (cl-remove-if-not (lambda (contact)
+                                                             (equal (omni-contacts--get-contact-visual-name contact)
+                                                                    selection))
+                                                           contacts)))
+             (show-contact (selection)
+                           (omni-contacts--contact-card-show (pick-matching-contact collection
+                                                                                    selection))))
+    (let* ((choices (mapcar #'omni-contacts--get-contact-visual-name
+                            collection)))
+      (if (featurep 'ivy)
+          (let* ((ivy-wrap t))
+            (ivy-read "Select a Contact to view: "
+                      choices
+                      :action #'show-contact))
+        (show-contact (ido-completing-read "Select a Contact to view: "
+                                           choices))))))
 
 (defun omni-contacts--show-contact-list-to-browse (collection)
   "Shows a list of contacts and opens a contact card foxr the selection."
