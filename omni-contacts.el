@@ -76,9 +76,9 @@
 
 (defun omni-contacts--get-contact-visual-name (contact)
   "Gets a contact's visual name."
-  (concat (cdar contact)
-          " "
-          (cdadr contact)))
+  (cl-reduce (lambda (a b)
+               (concat a " " b))
+             (car contact)))
 
 (defun omni-contacts--get-contact-card-buffer-name (contact)
   "Gets a contact's visual name."
@@ -104,7 +104,7 @@
                                                                             'face
                                                                             '(:height 1.2))
                                                                 "\n")))
-                                              contact))
+                                              (cdr contact)))
                  (print-other-details ()
                                       (insert (propertize "\n(Press 'q' to close)"
                                                           'face
@@ -130,12 +130,18 @@
 
 (defun omni-contacts--find-matching-entries (contacts search-term)
   "Returns a list of contacts with fields matching the search term."
-  (cl-flet* ((value-matches-p (pair)
+  (cl-flet* ((contains-matching-value-p (list)
+                                        (cl-remove-if-not (lambda (value)
+                                                            (string-match-p (regexp-quote search-term)
+                                                                            value))
+                                                          list))
+             (value-matches-p (pair)
                               (string-match-p (regexp-quote search-term)
                                               (cdr pair)))
              (fields-match-p (contact)
-                             (cl-remove-if-not #'value-matches-p
-                                               contact)))
+                             (or (contains-matching-value-p (car contact))
+                                 (cl-remove-if-not #'value-matches-p
+                                                   (cdr contact)))))
     (cl-remove-if-not #'fields-match-p
                       contacts)))
 
