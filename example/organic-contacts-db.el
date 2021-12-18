@@ -1,4 +1,4 @@
-(setq omni-contacts--data
+(setq organic-contacts--data
       '(
         (("John" "Shepard")
          (title . "N7 Alliance Marine / Spectre")

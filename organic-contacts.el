@@ -1,4 +1,4 @@
-;;; omni-contacts.el --- A local address-book for Emacs
+;;; organic-contacts.el --- A local address-book for Emacs
 
 ;; This file is not part of Emacs
 
@@ -31,20 +31,20 @@
 ;; Put this file on your Emacs-Lisp load path, add following into your
 ;; ~/.emacs startup file
 ;;
-;;     (require 'omni-contacts)
+;;     (require 'organic-contacts)
 ;;
 ;; Specify file to load data from
 ;;
-;;     (omni-contacts-load-db "~/omni-contacts-db.el")
+;;     (organic-contacts-load-db "~/organic-contacts-db.el")
 ;;
 ;; Alternatively, load the supplied sample DB
 ;;
-;;     (omni-contacts-load-sample-db)
+;;     (organic-contacts-load-sample-db)
 ;;
 ;; And add a set of key-bindings
 ;;
-;;     (global-set-key (kbd "C-*") 'omni-contacts-browse-contacts)
-;;     (global-set-key (kbd "C-&") 'omni-contacts-lookup-people)
+;;     (global-set-key (kbd "C-*") 'organic-contacts-browse-contacts)
+;;     (global-set-key (kbd "C-&") 'organic-contacts-lookup-people)
 ;;
 
 ;;; Commentary:
@@ -65,32 +65,32 @@
 
 (require 'cl-lib)
 
-(defvar omni-contacts--base-path
+(defvar organic-contacts--base-path
   (file-name-directory load-file-name))
 
-(defvar omni-contacts--db-path
+(defvar organic-contacts--db-path
   nil)
 
-(defvar omni-contacts--data
+(defvar organic-contacts--data
   ())
 
-(defun omni-contacts--get-contact-visual-name (contact)
+(defun organic-contacts--get-contact-visual-name (contact)
   "Gets a contact's visual name."
   (cl-reduce (lambda (a b)
                (concat a " " b))
              (car contact)))
 
-(defun omni-contacts--get-contact-card-buffer-name (contact)
+(defun organic-contacts--get-contact-card-buffer-name (contact)
   "Gets a contact's visual name."
   (concat "Contact: "
-          (omni-contacts--get-contact-visual-name contact)))
+          (organic-contacts--get-contact-visual-name contact)))
 
-(defun omni-contacts--contact-card-show (contact)
+(defun organic-contacts--contact-card-show (contact)
   "Shows the specified contact in a special buffer."
-  (let* ((new-buffer (get-buffer-create (omni-contacts--get-contact-card-buffer-name contact))))
+  (let* ((new-buffer (get-buffer-create (organic-contacts--get-contact-card-buffer-name contact))))
     (with-current-buffer new-buffer
       (cl-flet* ((print-contact-title (contact)
-                                      (insert (concat (propertize (omni-contacts--get-contact-visual-name contact)
+                                      (insert (concat (propertize (organic-contacts--get-contact-visual-name contact)
                                                                   'face
                                                                   '(:height 2.0))
                                                       "\n\n")))
@@ -113,22 +113,22 @@
                                  (local-set-key (kbd "q")
                                                 (lambda ()
                                                   (interactive)
-                                                  (omni-contacts--contact-card-hide))))
+                                                  (organic-contacts--contact-card-hide))))
                  (show-contact-card-buffer ()
                                            (set-window-buffer (get-buffer-window)
                                                               new-buffer)))
         (print-contact-title contact)
         (print-contact-details contact)
         (print-other-details)
-        (omni-contacts-contact-mode)
+        (organic-contacts-contact-mode)
         (bind-close-key)
         (show-contact-card-buffer)))))
 
-(defun omni-contacts--contact-card-hide ()
+(defun organic-contacts--contact-card-hide ()
   "Hides an open contact card."
   (kill-buffer))
 
-(defun omni-contacts--find-matching-entries (contacts search-term)
+(defun organic-contacts--find-matching-entries (contacts search-term)
   "Returns a list of contacts with fields matching the search term."
   (cl-flet* ((contains-matching-value-p (list)
                                         (cl-remove-if-not (lambda (value)
@@ -145,17 +145,17 @@
     (cl-remove-if-not #'fields-match-p
                       contacts)))
 
-(defun omni-contacts--present-choice-of-contacts (collection)
+(defun organic-contacts--present-choice-of-contacts (collection)
   "Presents a choice of contacts using either ivy or ido"
   (cl-flet* ((pick-matching-contact (contacts selection)
                                     (car (cl-remove-if-not (lambda (contact)
-                                                             (equal (omni-contacts--get-contact-visual-name contact)
+                                                             (equal (organic-contacts--get-contact-visual-name contact)
                                                                     selection))
                                                            contacts)))
              (show-contact (selection)
-                           (omni-contacts--contact-card-show (pick-matching-contact collection
+                           (organic-contacts--contact-card-show (pick-matching-contact collection
                                                                                     selection))))
-    (let* ((choices (mapcar #'omni-contacts--get-contact-visual-name
+    (let* ((choices (mapcar #'organic-contacts--get-contact-visual-name
                             collection)))
       (if (featurep 'ivy)
           (let* ((ivy-wrap t))
@@ -165,51 +165,51 @@
         (show-contact (ido-completing-read "Select a Contact to view: "
                                            choices))))))
 
-(defun omni-contacts--show-contact-list-to-browse (collection)
+(defun organic-contacts--show-contact-list-to-browse (collection)
   "Shows a list of contacts and opens a contact card foxr the selection."
   (cond ((equal (length collection)
-                0) (message "omni-contacts: No contacts to show!"))
+                0) (message "organic-contacts: No contacts to show!"))
         ((equal (length collection)
-                1) (omni-contacts--contact-card-show (car collection)))
-        (t (omni-contacts--present-choice-of-contacts collection))))
+                1) (organic-contacts--contact-card-show (car collection)))
+        (t (organic-contacts--present-choice-of-contacts collection))))
 
 ;;;###autoload
-(defun omni-contacts-load-db (file-path)
+(defun organic-contacts-load-db (file-path)
   "Loads the specified DB file"
-  (setq omni-contacts--db-path
+  (setq organic-contacts--db-path
         file-path)
   (load-file file-path)
-  (message (concat "omni-contacts: Loaded "
-                   (number-to-string (length omni-contacts--data))
+  (message (concat "organic-contacts: Loaded "
+                   (number-to-string (length organic-contacts--data))
                    " records!")))
 
 ;;;###autoload
-(defun omni-contacts-load-sample-db ()
+(defun organic-contacts-load-sample-db ()
   "Loads included sample database"
   (interactive)
-  (omni-contacts-load-db (expand-file-name "example/omni-contacts-db.el"
-			                               omni-contacts--base-path)))
+  (organic-contacts-load-db (expand-file-name "example/organic-contacts-db.el"
+			                               organic-contacts--base-path)))
 
 ;;;###autoload
-(defun omni-contacts-browse-contacts ()
+(defun organic-contacts-browse-contacts ()
   "Presents a list of contacts to choose from."
   (interactive)
-  (omni-contacts--show-contact-list-to-browse omni-contacts--data))
+  (organic-contacts--show-contact-list-to-browse organic-contacts--data))
 
 ;;;###autoload
-(defun omni-contacts-lookup-people (search-term)
+(defun organic-contacts-lookup-people (search-term)
   "Accepts a search term and prompts to select from matching contacts."
   (interactive "sEnter search term: ")
-  (let* ((matching-contacts (omni-contacts--find-matching-entries omni-contacts--data
+  (let* ((matching-contacts (organic-contacts--find-matching-entries organic-contacts--data
                                                                   search-term)))
-    (omni-contacts--show-contact-list-to-browse matching-contacts)))
+    (organic-contacts--show-contact-list-to-browse matching-contacts)))
 
-(define-derived-mode omni-contacts-contact-mode
+(define-derived-mode organic-contacts-contact-mode
   special-mode
-  "omni-contacts-contact"
+  "organic-contacts-contact"
   :abbrev-table nil
   :syntax-table nil)
 
-(provide 'omni-contacts)
+(provide 'organic-contacts)
 
-;;; omni-contacts.el ends here
+;;; organic-contacts.el ends here
