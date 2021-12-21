@@ -191,6 +191,19 @@
 			                                  organic-contacts--base-path)))
 
 ;;;###autoload
+(defun organic-contacts-save-back-to-db ()
+  "Saves data back to the DB file"
+  (interactive)
+  (with-temp-buffer
+    (insert "(setq organic-contacts--data '")
+    (prin1 organic-contacts--data (current-buffer))
+    (insert ")")
+    (write-file organic-contacts--db-path))
+  (message (concat "organic-contacts: Saved "
+                   (number-to-string (length organic-contacts--data))
+                   " records!")))
+
+;;;###autoload
 (defun organic-contacts-browse-contacts ()
   "Presents a list of contacts to choose from."
   (interactive)
