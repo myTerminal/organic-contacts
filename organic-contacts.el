@@ -154,7 +154,7 @@
                                                            contacts)))
              (show-contact (selection)
                            (organic-contacts--contact-card-show (pick-matching-contact collection
-                                                                                    selection))))
+                                                                                       selection))))
     (let* ((choices (mapcar #'organic-contacts--get-contact-visual-name
                             collection)))
       (if (featurep 'ivy)
@@ -166,7 +166,7 @@
                                            choices))))))
 
 (defun organic-contacts--show-contact-list-to-browse (collection)
-  "Shows a list of contacts and opens a contact card foxr the selection."
+  "Shows a list of contacts and opens a contact card for the selection."
   (cond ((equal (length collection)
                 0) (message "organic-contacts: No contacts to show!"))
         ((equal (length collection)
@@ -188,7 +188,7 @@
   "Loads included sample database"
   (interactive)
   (organic-contacts-load-db (expand-file-name "example/organic-contacts-db.el"
-			                               organic-contacts--base-path)))
+			                                  organic-contacts--base-path)))
 
 ;;;###autoload
 (defun organic-contacts-browse-contacts ()
@@ -201,7 +201,7 @@
   "Accepts a search term and prompts to select from matching contacts."
   (interactive "sEnter search term: ")
   (let* ((matching-contacts (organic-contacts--find-matching-entries organic-contacts--data
-                                                                  search-term)))
+                                                                     search-term)))
     (organic-contacts--show-contact-list-to-browse matching-contacts)))
 
 (define-derived-mode organic-contacts-contact-mode
