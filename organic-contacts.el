@@ -195,9 +195,16 @@
   "Saves data back to the DB file"
   (interactive)
   (with-temp-buffer
-    (insert "(setq organic-contacts--data '")
-    (prin1 organic-contacts--data (current-buffer))
-    (insert ")")
+    (insert "(setq organic-contacts--data '(\n")
+    (mapc (lambda (contact)
+            (insert "(\n")
+            (mapc (lambda (field-value-pair)
+                    (prin1 field-value-pair (current-buffer))
+                    (insert "\n"))
+                  contact)
+            (insert ")\n"))
+          organic-contacts--data)
+    (insert "))")
     (write-file organic-contacts--db-path))
   (message (concat "organic-contacts: Saved "
                    (number-to-string (length organic-contacts--data))
