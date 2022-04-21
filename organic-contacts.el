@@ -104,7 +104,7 @@
                                                                             'face
                                                                             '(:height 1.2))
                                                                 "\n")))
-                                              (cdr contact)))
+                                              (cddr contact)))
                  (print-other-details ()
                                       (insert (propertize "\n(Press 'q' to close)"
                                                           'face
