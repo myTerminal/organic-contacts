@@ -36,6 +36,7 @@ And add a set of key-bindings
 
     (global-set-key (kbd "C-*") 'organic-contacts-browse-contacts)
     (global-set-key (kbd "C-&") 'organic-contacts-lookup-people)
+    (global-set-key (kbd "C-^") 'organic-contacts--find-by-tag)
 
 ## To-Do
 

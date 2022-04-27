@@ -45,6 +45,7 @@
 ;;
 ;;     (global-set-key (kbd "C-*") 'organic-contacts-browse-contacts)
 ;;     (global-set-key (kbd "C-&") 'organic-contacts-lookup-people)
+;;     (global-set-key (kbd "C-^") 'organic-contacts-find-by-tag)
 ;;
 
 ;;; Commentary:
@@ -145,6 +146,18 @@
     (cl-remove-if-not #'fields-match-p
                       contacts)))
 
+(defun organic-contacts--find-tagged-entries (contacts tag)
+  "Returns a list of contacts containing the specified tag."
+  (cl-remove-if-not (lambda (contact)
+                      (member tag
+                              (cadr contact)))
+                    contacts))
+
+(defun organic-contacts--show-tagged-contacts (tag)
+  "Prompts with a list of contacts containing the specified tag."
+  (organic-contacts--present-choice-of-contacts (organic-contacts--find-tagged-entries organic-contacts--data
+                                                                                       tag)))
+
 (defun organic-contacts--present-choice-of-contacts (collection)
   "Presents a choice of contacts using either ivy or ido"
   (cl-flet* ((pick-matching-contact (contacts selection)
@@ -223,6 +236,21 @@
   (let* ((matching-contacts (organic-contacts--find-matching-entries organic-contacts--data
                                                                      search-term)))
     (organic-contacts--show-contact-list-to-browse matching-contacts)))
+
+;;;###autoload
+(defun organic-contacts-find-by-tag ()
+  "Accepts a search term and prompts to select from matching contacts."
+  (interactive)
+  (let* ((all-tags (cl-remove-duplicates (flatten-list (mapcar (lambda (c)
+                                                                 (cadr c))
+                                                               organic-contacts--data)) :test 'equal)))
+    (if (featurep 'ivy)
+        (let* ((ivy-wrap t))
+          (ivy-read "Select a tag to browse: "
+                    all-tags
+                    :action #'organic-contacts--show-tagged-contacts))
+      (organic-contacts--show-tagged-contacts (ido-completing-read "Select a tag to browse: "
+                                                                   all-tags)))))
 
 (define-derived-mode organic-contacts-contact-mode
   special-mode
