@@ -106,6 +106,17 @@
                                                                             '(:height 1.2))
                                                                 "\n")))
                                               (cddr contact)))
+                 (print-contact-tags (contact)
+                                     (insert (concat (propertize "Tags"
+                                                                 'face
+                                                                 '(:height 1.2 :weight bold))
+                                                     ": "
+                                                     (propertize (cl-reduce (lambda (a b)
+                                                                              (concat a ", " b))
+                                                                            (cadr contact))
+                                                                 'face
+                                                                 '(:height 1.2))
+                                                     "\n")))
                  (print-other-details ()
                                       (insert (propertize "\n(Press 'q' to close)"
                                                           'face
@@ -120,6 +131,7 @@
                                                               new-buffer)))
         (print-contact-title contact)
         (print-contact-details contact)
+        (print-contact-tags contact)
         (print-other-details)
         (organic-contacts-contact-mode)
         (bind-close-key)
