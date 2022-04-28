@@ -26,17 +26,17 @@ Start the package with:
 
 Specify file to load data from
 
-    (organic-contacts-load-db "~/organic-contacts-db.el")
+    (organic-contacts/load/db "~/organic-contacts-db.el")
 
 Alternatively, load the supplied sample DB
 
-    (organic-contacts-load-sample-db)
+    (organic-contacts/load/sample-db)
 
 And add a set of key-bindings
 
-    (global-set-key (kbd "C-*") 'organic-contacts-browse-contacts)
-    (global-set-key (kbd "C-&") 'organic-contacts-lookup-people)
-    (global-set-key (kbd "C-^") 'organic-contacts--find-by-tag)
+    (global-set-key (kbd "C-*") 'organic-contacts/view/browse)
+    (global-set-key (kbd "C-&") 'organic-contacts/view/search)
+    (global-set-key (kbd "C-^") 'organic-contacts/view/find-by-tag)
 
 ## To-Do
 

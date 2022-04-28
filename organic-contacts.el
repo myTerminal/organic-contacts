@@ -35,17 +35,17 @@
 ;;
 ;; Specify file to load data from
 ;;
-;;     (organic-contacts-load-db "~/organic-contacts-db.el")
+;;     (organic-contacts/load/db "~/organic-contacts-db.el")
 ;;
 ;; Alternatively, load the supplied sample DB
 ;;
-;;     (organic-contacts-load-sample-db)
+;;     (organic-contacts/load/sample-db)
 ;;
 ;; And add a set of key-bindings
 ;;
-;;     (global-set-key (kbd "C-*") 'organic-contacts-browse-contacts)
-;;     (global-set-key (kbd "C-&") 'organic-contacts-lookup-people)
-;;     (global-set-key (kbd "C-^") 'organic-contacts-find-by-tag)
+;;     (global-set-key (kbd "C-*") 'organic-contacts/view/browse)
+;;     (global-set-key (kbd "C-&") 'organic-contacts/view/search)
+;;     (global-set-key (kbd "C-^") 'organic-contacts/view/find-by-tag)
 ;;
 
 ;;; Commentary:
@@ -199,7 +199,7 @@
         (t (organic-contacts--present-choice-of-contacts collection))))
 
 ;;;###autoload
-(defun organic-contacts-load-db (file-path)
+(defun organic-contacts/load/db (file-path)
   "Loads the specified DB file"
   (setq organic-contacts--db-path
         file-path)
@@ -209,10 +209,10 @@
                    " records!")))
 
 ;;;###autoload
-(defun organic-contacts-load-sample-db ()
+(defun organic-contacts/load/sample-db ()
   "Loads included sample database"
   (interactive)
-  (organic-contacts-load-db (expand-file-name "example/organic-contacts-db.el"
+  (organic-contacts/load/db (expand-file-name "example/organic-contacts-db.el"
 			                                  organic-contacts--base-path)))
 
 ;;;###autoload
@@ -236,13 +236,13 @@
                    " records!")))
 
 ;;;###autoload
-(defun organic-contacts-browse-contacts ()
+(defun organic-contacts/view/browse ()
   "Presents a list of contacts to choose from."
   (interactive)
   (organic-contacts--show-contact-list-to-browse organic-contacts--data))
 
 ;;;###autoload
-(defun organic-contacts-lookup-people (search-term)
+(defun organic-contacts/view/search (search-term)
   "Accepts a search term and prompts to select from matching contacts."
   (interactive "sEnter search term: ")
   (let* ((matching-contacts (organic-contacts--find-matching-entries organic-contacts--data
@@ -250,7 +250,7 @@
     (organic-contacts--show-contact-list-to-browse matching-contacts)))
 
 ;;;###autoload
-(defun organic-contacts-find-by-tag ()
+(defun organic-contacts/view/find-by-tag ()
   "Accepts a search term and prompts to select from matching contacts."
   (interactive)
   (let* ((all-tags (cl-remove-duplicates (flatten-list (mapcar (lambda (c)
