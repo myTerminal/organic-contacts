@@ -216,7 +216,7 @@
 			                                  organic-contacts--base-path)))
 
 ;;;###autoload
-(defun organic-contacts-save-back-to-db ()
+(defun organic-contacts/save/db ()
   "Saves data back to the DB file"
   (interactive)
   (with-temp-buffer
