@@ -154,7 +154,7 @@
              (fields-match-p (contact)
                              (or (contains-matching-value-p (car contact))
                                  (cl-remove-if-not #'value-matches-p
-                                                   (cdr contact)))))
+                                                   (cddr contact)))))
     (cl-remove-if-not #'fields-match-p
                       contacts)))
 
