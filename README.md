@@ -32,11 +32,11 @@ Alternatively, load the supplied sample DB
 
     (organic-contacts/load/sample-db)
 
-And add a set of key-bindings
+View contacts using the following functions
 
-    (global-set-key (kbd "C-*") 'organic-contacts/view/browse)
-    (global-set-key (kbd "C-&") 'organic-contacts/view/search)
-    (global-set-key (kbd "C-^") 'organic-contacts/view/find-by-tag)
+ - `organic-contacts/view/browse`
+ - `organic-contacts/view/search`
+ - `organic-contacts/view/find-by-tag`
 
 ## To-Do
 
